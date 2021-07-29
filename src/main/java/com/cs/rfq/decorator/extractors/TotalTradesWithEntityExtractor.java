@@ -21,7 +21,7 @@ public class TotalTradesWithEntityExtractor implements RfqMetadataExtractor {
         long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
 
         Dataset<Row> filtered = trades
-                .filter(trades.col("SecurityId").equalTo(rfq.getIsin()))
+                .filter(trades.col("SecurityID").equalTo(rfq.getIsin()))
                 .filter(trades.col("EntityId").equalTo(rfq.getEntityId()));
 
         long tradesToday = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(todayMs))).count();

@@ -40,7 +40,7 @@ public class RfqProcessor {
 
         //TODO: use the TradeDataLoader to load the trade data archives
         TradeDataLoader loader = new TradeDataLoader();
-        Dataset<Row> data = loader.loadTrades(session, "src\\test\\resources\\trades\\trades.json");
+        trades = loader.loadTrades(session, "src\\test\\resources\\trades\\trades.json");
 
 
         //TODO: take a close look at how these two extractors are implemented
