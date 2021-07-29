@@ -1,5 +1,10 @@
-# Please provide a team name
+# Fore Runners
 ### Team Members
-    - one
-    - two
-    - three
+    - Joseph Natale
+    - McGwire Jones
+    - Deep Sanghavi
+    - Claire Marshak
+#### Roles
+    - Product Owner: Claire
+    - Scrum Master: McGwire 
+    - Developers: Joseph and Deep
