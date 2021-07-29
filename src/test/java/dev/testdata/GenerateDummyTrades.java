@@ -33,7 +33,7 @@ public class GenerateDummyTrades {
     private static final int instruments_limit = 10;
     private static final int trades_min = 1;
     private static final int trades_max = 15;
-
+    //test comment
     public static void main(String[] args) throws Exception {
 
         //load counterparty data
