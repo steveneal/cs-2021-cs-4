@@ -1,5 +1,7 @@
 package com.cs.rfq.decorator;
 
+import breeze.linalg.operators.SparseVectorOps$CanZipMapKeyValuesSparseVector$mcIJ$sp;
+import javafx.util.Duration;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.streaming.Durations;
@@ -12,12 +14,14 @@ public class RfqDecoratorMain {
         System.setProperty("spark.master", "local[4]");
 
         //TODO: create a Spark configuration and set a sensible app name
-
+         SparkConf conf = new SparkConf().setAppName("RfqStream");
         //TODO: create a Spark streaming context
-
+        JavaStreamingContext context = new JavaStreamingContext(conf, Durations.seconds(5));
         //TODO: create a Spark session
-
+        SparkSession session = SparkSession.builder().config(conf).getOrCreate();
         //TODO: create a new RfqProcessor and set it listening for incoming RFQs
+        RfqProcessor rfqProcessor = new RfqProcessor(session, context);
+        rfqProcessor.startSocketListener();
     }
 
 }
