@@ -12,12 +12,16 @@ public class RfqDecoratorMain {
         System.setProperty("spark.master", "local[4]");
 
         //TODO: create a Spark configuration and set a sensible app name
-
+        SparkSession session = SparkSession
+                                .builder()
+                .appName("ForeRunners")
+                .getOrCreate();
         //TODO: create a Spark streaming context
 
         //TODO: create a Spark session
 
         //TODO: create a new RfqProcessor and set it listening for incoming RFQs
+
     }
 
 }
