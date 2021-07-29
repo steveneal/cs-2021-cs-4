@@ -41,6 +41,9 @@ public class RfqProcessor {
         this.streamingContext = streamingContext;
 
         //TODO: use the TradeDataLoader to load the trade data archives
+        TradeDataLoader loader = new TradeDataLoader();
+        Dataset<Row> data = loader.loadTrades(session, streamingContext.toString());
+
 
         //TODO: take a close look at how these two extractors are implemented
         extractors.add(new TotalTradesWithEntityExtractor());
@@ -62,6 +65,7 @@ public class RfqProcessor {
         Map<RfqMetadataFieldNames, Object> metadata = new HashMap<>();
 
         //TODO: get metadata from each of the extractors
+
 
         //TODO: publish the metadata
     }
