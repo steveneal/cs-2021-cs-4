@@ -18,29 +18,21 @@ public class TradeDataLoader {
     private final static Logger log = LoggerFactory.getLogger(TradeDataLoader.class);
 
     public Dataset<Row> loadTrades(SparkSession session, String path) {
-        //TODO: create an explicit schema for the trade data in the JSON files
+        //Create an explicit schema for the trade data in the JSON files
         StructType schema =  new StructType(new StructField[] {
                 new StructField("TraderId", LongType, false, Metadata.empty()),
                 new StructField("EntityId", LongType, false, Metadata.empty()),
-                new StructField("MsgType", IntegerType, false, Metadata.empty()),
-                new StructField("TradeReportId", LongType, false, Metadata.empty()),
-                new StructField("PreviouslyReported", StringType, false, Metadata.empty()),
-                new StructField("SecurityId", StringType, false, Metadata.empty()),
-                new StructField("SecurityIdSource", IntegerType, false, Metadata.empty()),
-                new StructField("LastQty", IntegerType, false, Metadata.empty()),
+                new StructField("SecurityID", StringType, false, Metadata.empty()),
+                new StructField("LastQty", LongType, false, Metadata.empty()),
                 new StructField("LastPx", DoubleType, false, Metadata.empty()),
                 new StructField("TradeDate", DateType, false, Metadata.empty()),
-                new StructField("TransactTime", TimestampType, false, Metadata.empty()),
-                new StructField("NoSides", IntegerType, false, Metadata.empty()),
-                new StructField("Side", IntegerType, false, Metadata.empty()),
-                new StructField("OrderID", LongType, false, Metadata.empty()),
                 new StructField("Currency", StringType, false, Metadata.empty()),
         });
 
-        //TODO: load the trades dataset
+        //load the trades dataset
         Dataset<Row> trades = session.read().schema(schema).json(path);
 
-        //TODO: log a message indicating number of records loaded and the schema used
+        //log a message indicating number of records loaded and the schema used
         System.out.println(String.format("Number of records loaded: %d", trades.count()));
         trades.printSchema();
 
