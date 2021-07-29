@@ -9,16 +9,14 @@ import com.cs.rfq.decorator.publishers.MetadataPublisher;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.apache.spark.sql.functions.sum;
 
@@ -42,7 +40,7 @@ public class RfqProcessor {
 
         //TODO: use the TradeDataLoader to load the trade data archives
         TradeDataLoader loader = new TradeDataLoader();
-        Dataset<Row> data = loader.loadTrades(session, "src\test\resources\trades.json");
+        Dataset<Row> data = loader.loadTrades(session, "src\\test\\resources\\trades\\trades.json");
 
 
         //TODO: take a close look at how these two extractors are implemented
@@ -52,8 +50,11 @@ public class RfqProcessor {
 
     public void startSocketListener() throws InterruptedException {
         //TODO: stream data from the input socket on localhost:9000
+        JavaDStream<String> lines = streamingContext.socketTextStream("localhost", 9000);
 
         //TODO: convert each incoming line to a Rfq object and call processRfq method with it
+        //JavaDStream<Rfq> rfqs = lines.flatMap(x -> Rfq.fromJson(x));
+
 
         //TODO: start the streaming context
     }
@@ -64,9 +65,13 @@ public class RfqProcessor {
         //create a blank map for the metadata to be collected
         Map<RfqMetadataFieldNames, Object> metadata = new HashMap<>();
 
-        //TODO: get metadata from each of the extractors
+        //Get metadata from each of the extractors
+        Map<RfqMetadataFieldNames, Object> map  = new HashMap<RfqMetadataFieldNames, Object>();
+        for(RfqMetadataExtractor extractor : extractors) {
+            map.putAll(extractor.extractMetaData(rfq, session, trades));
+        }
 
-
-        //TODO: publish the metadata
+        //Publish the metadata
+        publisher.publishMetadata(map);
     }
 }
