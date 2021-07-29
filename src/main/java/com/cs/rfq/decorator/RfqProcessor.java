@@ -54,8 +54,8 @@ public class RfqProcessor {
 
         //convert each incoming line to a Rfq object and call processRfq method with it
         JavaDStream<Rfq> rfqObj = jsonData.map(x -> Rfq.fromJson(x));
-        rfqObj.foreachRDD(rfq -> {
-            rfq.collect().forEach(line -> processRfq(line));
+        rfqObj.foreachRDD(rdd -> {
+            rdd.collect().forEach(rfq -> processRfq(rfq));
         });
 
         //start the streaming context
@@ -66,6 +66,7 @@ public class RfqProcessor {
 
     public void processRfq(Rfq rfq) {
         log.info(String.format("Received Rfq: %s", rfq.toString()));
+        System.out.println(rfq);
 
         //create a blank map for the metadata to be collected
         Map<RfqMetadataFieldNames, Object> metadata = new HashMap<>();

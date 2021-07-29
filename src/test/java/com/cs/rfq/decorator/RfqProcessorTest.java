@@ -50,7 +50,7 @@ public class RfqProcessorTest {
                 "'price': 1.58, " +
                 "'side': 'B' " +
                 "}";
-
+        System.out.println(validRfqJson);
         Rfq rfq = Rfq.fromJson(validRfqJson);
         JavaStreamingContext context = new JavaStreamingContext(conf, Durations.seconds(5));
 
