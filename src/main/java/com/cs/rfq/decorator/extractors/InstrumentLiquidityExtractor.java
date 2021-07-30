@@ -17,12 +17,12 @@ public class InstrumentLiquidityExtractor extends AbstractExtractor implements R
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
 
         long todayMs = getNow().getMillis();
-        long pastMonthMs = DateTime.now().withMillis(todayMs).minusMonths(1).getMillis();
+        long pastMonthMs = getNow().minusMonths(1).getMillis();
 
         Dataset<Row> filtered = trades
                 .filter(trades.col("SecurityId").equalTo(rfq.getIsin()));
 
-        Dataset<Row> volumePastMonth = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastMonthMs)))
+        Dataset<Row> volumePastMonth = filtered.filter(trades.col("TradeDate").$greater$eq(new java.sql.Date(pastMonthMs)))
                 .select(sum("LastQty"));
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();

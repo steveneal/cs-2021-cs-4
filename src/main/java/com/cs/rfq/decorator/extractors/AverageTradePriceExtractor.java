@@ -15,8 +15,9 @@ import static org.apache.spark.sql.functions.avg;
 public class AverageTradePriceExtractor extends AbstractExtractor implements RfqMetadataExtractor {
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
+
         long todayMs = getNow().getMillis();
-        long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
+        long pastWeekMs = getNow().minusWeeks(1).getMillis();
 
         Dataset<Row> filtered = trades
                 .filter(trades.col("SecurityID").equalTo(rfq.getIsin()))  //
@@ -24,7 +25,7 @@ public class AverageTradePriceExtractor extends AbstractExtractor implements Rfq
 
         Dataset<Row> avgTradedPrice = filtered.filter(
                 trades.col("TradeDate")
-                        .$greater(new java.sql.Date(pastWeekMs)))
+                        .$greater$eq(new java.sql.Date(pastWeekMs)))
                 .select(avg("LastPx").as("PriceAverage"));
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();

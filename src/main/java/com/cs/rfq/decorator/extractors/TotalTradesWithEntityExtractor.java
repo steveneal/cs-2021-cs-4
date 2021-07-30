@@ -17,23 +17,24 @@ public class TotalTradesWithEntityExtractor extends AbstractExtractor implements
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
 
         long todayMs = getNow().getMillis();
-        long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
-        long pastMonthMs = DateTime.now().withMillis(todayMs).minusMonths(1).getMillis();
-        long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
+        long pastWeekMs = getNow().minusWeeks(1).getMillis();
+        long pastMonthMs = getNow().minusMonths(1).getMillis();
+        long pastYearMs = getNow().minusYears(1).getMillis();
 
         Dataset<Row> filtered = trades
                 .filter(trades.col("SecurityID").equalTo(rfq.getIsin()))
                 .filter(trades.col("EntityId").equalTo(rfq.getEntityId()));
         System.out.println(filtered.first());
         long tradesToday = filtered.filter(trades.col("TradeDate").$greater$eq(new java.sql.Date(todayMs))).count();
-        long tradesPastWeek = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastWeekMs))).count();
-        long tradesPastMonth = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastMonthMs))).count();
-        long tradesPastYear = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastYearMs))).count();
+        long tradesPastWeek = filtered.filter(trades.col("TradeDate").$greater$eq(new java.sql.Date(pastWeekMs))).count();
+        long tradesPastMonth = filtered.filter(trades.col("TradeDate").$greater$eq(new java.sql.Date(pastMonthMs))).count();
+        long tradesPastYear = filtered.filter(trades.col("TradeDate").$greater$eq(new java.sql.Date(pastYearMs))).count();
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
         results.put(tradesWithEntityToday, tradesToday);
         results.put(tradesWithEntityToday, tradesPastMonth);
         results.put(tradesWithEntityPastWeek, tradesPastWeek);
+        results.put(tradesWithEntityPastMonth, tradesPastMonth);
         results.put(tradesWithEntityPastYear, tradesPastYear);
         return results;
     }

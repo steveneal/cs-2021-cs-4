@@ -12,14 +12,14 @@ import java.util.Map;
 
 import static com.cs.rfq.decorator.extractors.RfqMetadataFieldNames.*;
 
-public class TradeBiasExtractor implements RfqMetadataExtractor {
+public class TradeBiasExtractor extends AbstractExtractor implements RfqMetadataExtractor {
 
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
 
-        long todayMs = DateTime.now().withMillisOfDay(0).getMillis();
-        long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
-        long pastMonthMs = DateTime.now().withMillis(todayMs).minusMonths(1).getMillis();
+        long todayMs = getNow().getMillis();
+        long pastWeekMs = getNow().minusWeeks(1).getMillis();
+        long pastMonthMs = getNow().minusMonths(1).getMillis();
 
         //Dataset of trades for this instrument between us and the entity
         Dataset<Row> filtered = trades
@@ -46,8 +46,7 @@ public class TradeBiasExtractor implements RfqMetadataExtractor {
 
         double a = (double)weekBuys / ((double)weekBuys + (double)weekSells) * 100L;
         double b = (double)monthBuys / ((double)monthBuys + (double)monthSells) * 100L;
-
-        //System.out.println(a + " ... months: " + b);
+//System.out.println(a + " ... months: " + b);
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
         results.put(tradeBiasBuyPercentagePastWeek, (int)Math.round(a));

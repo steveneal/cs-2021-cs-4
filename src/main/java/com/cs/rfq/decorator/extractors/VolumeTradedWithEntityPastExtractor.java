@@ -18,24 +18,24 @@ public class VolumeTradedWithEntityPastExtractor extends AbstractExtractor imple
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
 
         long todayMs = getNow().getMillis();
-        long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
-        long pastMonthMs = DateTime.now().withMillis(todayMs).minusMonths(1).getMillis();
-        long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
+        long pastWeekMs = getNow().minusWeeks(1).getMillis();
+        long pastMonthMs = getNow().minusMonths(1).getMillis();
+        long pastYearMs = getNow().minusYears(1).getMillis();
 
         Dataset<Row> filtered = trades
                 .filter(trades.col("SecurityID").equalTo(rfq.getIsin()))  //
                 .filter(trades.col("EntityId").equalTo(rfq.getEntityId()));
 
         Dataset<Row> dataVolumeTradedPastWeek = filtered.filter(
-                trades.col("TradeDate").$greater(new java.sql.Date(pastWeekMs)))
+                trades.col("TradeDate").$greater$eq(new java.sql.Date(pastWeekMs)))
                 .select(sum("LastQty").as("WeekVolume"));
 
         Dataset<Row> dataVolumeTradedPastMonth = filtered.filter(
-                trades.col("TradeDate").$greater(new java.sql.Date(pastMonthMs)))
+                trades.col("TradeDate").$greater$eq(new java.sql.Date(pastMonthMs)))
                 .select(sum("LastQty").as("MonthVolume"));
 
         Dataset<Row> dataVolumeTradedPastYear = filtered.filter(
-                trades.col("TradeDate").$greater(new java.sql.Date(pastYearMs)))
+                trades.col("TradeDate").$greater$eq(new java.sql.Date(pastYearMs)))
                 .select(sum("LastQty").as("YearVolume"));
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
