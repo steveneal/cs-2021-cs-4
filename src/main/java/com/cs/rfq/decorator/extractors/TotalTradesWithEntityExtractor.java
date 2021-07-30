@@ -21,10 +21,10 @@ public class TotalTradesWithEntityExtractor extends AbstractExtractor implements
         long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
 
         Dataset<Row> filtered = trades
-                .filter(trades.col("SecurityID").equalTo(rfq.getIsin()))  //
+                .filter(trades.col("SecurityID").equalTo(rfq.getIsin()))
                 .filter(trades.col("EntityId").equalTo(rfq.getEntityId()));
-
-        long tradesToday = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(todayMs))).count();
+        System.out.println(filtered.first());
+        long tradesToday = filtered.filter(trades.col("TradeDate").$greater$eq(new java.sql.Date(todayMs))).count();
         long tradesPastWeek = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastWeekMs))).count();
         long tradesPastYear = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastYearMs))).count();
 

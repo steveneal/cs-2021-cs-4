@@ -57,7 +57,7 @@ public class TotalVolumeExtractorTest extends AbstractSparkUnitTest {
         Object months = meta.get(RfqMetadataFieldNames.qtyLastMonth);
         Object years = meta.get(RfqMetadataFieldNames.qtyLastYear);
 
-        assertEquals(500_000L, weeks);
+        assertEquals(550_000L, weeks);
         assertEquals(550_000L, months);
         assertEquals(1_300_000L, years);
     }
