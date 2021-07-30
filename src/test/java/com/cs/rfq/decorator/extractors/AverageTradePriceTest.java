@@ -30,10 +30,17 @@ public class AverageTradePriceTest extends AbstractSparkUnitTest {
     @Test
     public void checkAverageOfTestTrades() {
         TotalTradesWithEntityExtractor extractor = new TotalTradesWithEntityExtractor();
+        extractor.setSince("2021-07-30");
+
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
         Object result = meta.get(RfqMetadataFieldNames.averageTradedPrice);
 
         assertEquals(138, (int) result);
+    }
+
+    @Test
+    public void checkNoMatchesonTrades() {
+
     }
 }
