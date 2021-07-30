@@ -12,19 +12,12 @@ import java.util.Map;
 
 import static com.cs.rfq.decorator.extractors.RfqMetadataFieldNames.*;
 
-public class TotalTradesWithEntityExtractor implements RfqMetadataExtractor {
-
-    private String since;
-
-    public TotalTradesWithEntityExtractor() {
-        this.since = DateTime.now().getYear() + "-01-01";
-    }
-
+public class TotalTradesWithEntityExtractor extends AbstractExtractor implements RfqMetadataExtractor {
 
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
 
-        long todayMs = DateTime.now().withMillisOfDay(0).getMillis();
+        long todayMs = getNow().getMillis();
         long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
         long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
 
@@ -35,22 +28,12 @@ public class TotalTradesWithEntityExtractor implements RfqMetadataExtractor {
         long tradesToday = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(todayMs))).count();
         long tradesPastWeek = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastWeekMs))).count();
         long tradesPastYear = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastYearMs))).count();
-        Dataset<Row> avgTradedPrice = filtered.filter(
-                trades.col("TradeDate")
-                        .$greater(new java.sql.Date(pastWeekMs)))
-                .select(avg("LastPx").as("PriceAverage"));
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
         results.put(tradesWithEntityToday, tradesToday);
         results.put(tradesWithEntityPastWeek, tradesPastWeek);
         results.put(tradesWithEntityPastYear, tradesPastYear);
-        results.put(averageTradedPrice, (int)Math.round(avgTradedPrice.first().getDouble(0)));
         return results;
-    }
-
-    @Override
-    public void setSince(String since) {
-        this.since = since;
     }
 
 }

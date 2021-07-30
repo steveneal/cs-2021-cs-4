@@ -38,7 +38,6 @@ public class VolumeTradedWithEntityYTDExtractor implements RfqMetadataExtractor 
         return results;
     }
 
-    @Override
     public void setSince(String since) {
         this.since = since;
     }

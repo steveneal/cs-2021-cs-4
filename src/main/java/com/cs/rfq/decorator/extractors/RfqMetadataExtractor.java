@@ -11,7 +11,6 @@ import java.util.Map;
  * Any class that collects trade metadata should implement this interface
  */
 public interface RfqMetadataExtractor {
-    Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades);
 
-    void setSince(String since);
+    Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades);
 }

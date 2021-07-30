@@ -11,18 +11,11 @@ import static org.apache.spark.sql.functions.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TotalVolumeExtractor  implements RfqMetadataExtractor {
-
-    private String since;
-
-    public TotalVolumeExtractor() {
-        this.since = DateTime.now().getYear() + "-01-01";
-    }
-
+public class TotalVolumeExtractor extends AbstractExtractor implements RfqMetadataExtractor {
 
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
-        long todayMs = DateTime.now().withMillisOfDay(0).getMillis();
+        long todayMs = getNow().getMillis();
         long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
         long pastMonthMs = DateTime.now().withMillis(todayMs).minusMonths(1).getMillis();
         long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
@@ -46,10 +39,4 @@ public class TotalVolumeExtractor  implements RfqMetadataExtractor {
         results.put(RfqMetadataFieldNames.qtyLastYear, tradesPastYear.first().get(0));
         return results;
     }
-
-    @Override
-    public void setSince(String since) {
-        this.since = since;
-    }
-
 }
