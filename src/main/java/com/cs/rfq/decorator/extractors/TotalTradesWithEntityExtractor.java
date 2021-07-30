@@ -3,6 +3,7 @@ package com.cs.rfq.decorator.extractors;
 import com.cs.rfq.decorator.Rfq;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.functions;
 import org.apache.spark.sql.SparkSession;
 import org.joda.time.DateTime;
 
@@ -27,11 +28,16 @@ public class TotalTradesWithEntityExtractor implements RfqMetadataExtractor {
         long tradesToday = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(todayMs))).count();
         long tradesPastWeek = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastWeekMs))).count();
         long tradesPastYear = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastYearMs))).count();
+        Dataset<Row> avgTradedPrice = filtered.filter(
+                trades.col("TradeDate")
+                        .$greater(new java.sql.Date(pastWeekMs)))
+                .select(functions.avg("LastPx").as("PriceAverage"));
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
         results.put(tradesWithEntityToday, tradesToday);
         results.put(tradesWithEntityPastWeek, tradesPastWeek);
         results.put(tradesWithEntityPastYear, tradesPastYear);
+        results.put(averageTradedPrice, (int)Math.round(avgTradedPrice.first().getDouble(0)));
         return results;
     }
 
