@@ -43,6 +43,7 @@ public class RfqProcessor {
         //TODO: take a close look at how these two extractors are implemented
         extractors.add(new TotalTradesWithEntityExtractor());
         extractors.add(new VolumeTradedWithEntityYTDExtractor());
+        extractors.add(new VolumeTradedWithEntityPastExtractor());
         extractors.add(new TotalVolumeExtractor());
         extractors.add(new InstrumentLiquidityExtractor());
     }
