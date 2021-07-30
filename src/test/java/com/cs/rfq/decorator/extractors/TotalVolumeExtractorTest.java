@@ -62,4 +62,21 @@ public class TotalVolumeExtractorTest extends AbstractSparkUnitTest {
         assertEquals(1_300_000L, years);
     }
 
+    @Test
+    public void getVolumesForNoMatches() {
+
+        TotalVolumeExtractor extractor = new TotalVolumeExtractor();
+        extractor.setSince("2023-07-30");
+
+        Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades2);
+
+        Object weeks = meta.get(RfqMetadataFieldNames.qtyLastWeek);
+        Object months = meta.get(RfqMetadataFieldNames.qtyLastMonth);
+        Object years = meta.get(RfqMetadataFieldNames.qtyLastYear);
+
+        assertEquals(0, weeks);
+        assertEquals(0, months);
+        assertEquals(0, years);
+    }
+
 }

@@ -28,7 +28,11 @@ public class AverageTradePriceExtractor extends AbstractExtractor implements Rfq
                 .select(avg("LastPx").as("PriceAverage"));
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
-        results.put(averageTradedPrice, (int)Math.round(avgTradedPrice.first().getDouble(0)));
+        try {
+            results.put(averageTradedPrice, (int) Math.round(avgTradedPrice.first().getDouble(0)));
+        } catch(NullPointerException e) {
+            results.put(averageTradedPrice, 0);
+        }
         return results;
     }
 }

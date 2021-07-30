@@ -13,6 +13,7 @@ public class InstLiquidityTest extends AbstractSparkUnitTest{
         private Rfq rfq;
         Dataset<Row> trades;
         Dataset<Row> trades2;
+        Dataset<Row> noMatches;
 
         @BeforeEach
         public void setup() {
@@ -21,8 +22,10 @@ public class InstLiquidityTest extends AbstractSparkUnitTest{
         rfq.setIsin("AT0000A0VRQ6");
 
         String filePath = getClass().getResource("average-traded-1.json").getPath();
+        String noMatchPath = getClass().getResource("volume-traded-1.json").getPath();
         String filePath2 = getClass().getResource("liquiditytest.json").getPath();
         trades = new TradeDataLoader().loadTrades(session, filePath);
+        noMatches = new TradeDataLoader().loadTrades(session, noMatchPath);
         trades2 = new TradeDataLoader().loadTrades(session, filePath2);
     }
 
@@ -51,4 +54,16 @@ public class InstLiquidityTest extends AbstractSparkUnitTest{
 
         assertEquals(950_000L, months);
     }
+
+    @Test
+    public void checkNoMatchesonTrades() {
+        InstrumentLiquidityExtractor extractor = new InstrumentLiquidityExtractor();
+        extractor.setSince("2021-07-30");
+
+        Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, noMatches);
+
+        Object result = meta.get(RfqMetadataFieldNames.liquidityVolume);
+
+        assertEquals(0, (int) result);
     }
+}

@@ -3,7 +3,6 @@ package com.cs.rfq.decorator.extractors;
 import com.cs.rfq.decorator.Rfq;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import static org.apache.spark.sql.functions.*;
 import org.apache.spark.sql.SparkSession;
 import org.joda.time.DateTime;
 

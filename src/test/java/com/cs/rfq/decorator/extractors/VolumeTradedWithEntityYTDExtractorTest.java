@@ -15,6 +15,7 @@ public class VolumeTradedWithEntityYTDExtractorTest extends AbstractSparkUnitTes
 
     private Rfq rfq;
     Dataset<Row> trades;
+    Dataset<Row> noMatches;
 
     @BeforeEach
     public void setup() {
@@ -24,6 +25,9 @@ public class VolumeTradedWithEntityYTDExtractorTest extends AbstractSparkUnitTes
 
         String filePath = getClass().getResource("volume-traded-1.json").getPath();
         trades = new TradeDataLoader().loadTrades(session, filePath);
+
+        String noMatchPath = getClass().getResource("volume-traded-1.json").getPath();
+        noMatches = new TradeDataLoader().loadTrades(session, noMatchPath);
     }
 
     @Test
@@ -52,5 +56,4 @@ public class VolumeTradedWithEntityYTDExtractorTest extends AbstractSparkUnitTes
 
         assertEquals(0L, result);
     }
-
 }

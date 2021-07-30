@@ -26,7 +26,12 @@ public class InstrumentLiquidityExtractor extends AbstractExtractor implements R
                 .select(sum("LastQty"));
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
-        results.put(liquidityVolume, volumePastMonth.first().get(0));
+        System.out.println(volumePastMonth.first());
+        if(volumePastMonth.first().get(0) != null) {
+            results.put(liquidityVolume, volumePastMonth.first().get(0));
+        } else {
+            results.put(liquidityVolume, 0);
+        }
         return results;
     }
 }

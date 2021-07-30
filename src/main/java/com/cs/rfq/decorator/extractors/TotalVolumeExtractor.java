@@ -34,9 +34,22 @@ public class TotalVolumeExtractor extends AbstractExtractor implements RfqMetada
 
         System.out.println(tradesPastWeek.first());
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
-        results.put(RfqMetadataFieldNames.qtyLastWeek, tradesPastWeek.first().get(0));
-        results.put(RfqMetadataFieldNames.qtyLastMonth, tradesPastMonth.first().get(0));
-        results.put(RfqMetadataFieldNames.qtyLastYear, tradesPastYear.first().get(0));
+        if(tradesPastWeek.first().get(0) != null) {
+            results.put(RfqMetadataFieldNames.qtyLastWeek, tradesPastWeek.first().get(0));
+        } else {
+            results.put(RfqMetadataFieldNames.qtyLastWeek, 0);
+        }
+        if(tradesPastMonth.first().get(0) != null) {
+            results.put(RfqMetadataFieldNames.qtyLastMonth, tradesPastMonth.first().get(0));
+        } else {
+            results.put(RfqMetadataFieldNames.qtyLastMonth, 0);
+        }
+        if(tradesPastYear.first().get(0) != null) {
+            results.put(RfqMetadataFieldNames.qtyLastYear, tradesPastYear.first().get(0));
+        } else {
+            results.put(RfqMetadataFieldNames.qtyLastYear, 0);
+        }
+
         return results;
     }
 }

@@ -15,6 +15,7 @@ public class AverageTradePriceTest extends AbstractSparkUnitTest {
 
     private Rfq rfq;
     Dataset<Row> trades;
+    Dataset<Row> noMatches;
 
     @BeforeEach
     public void setup() {
@@ -24,13 +25,15 @@ public class AverageTradePriceTest extends AbstractSparkUnitTest {
         rfq.setPrice(130.0);
 
         String filePath = getClass().getResource("average-traded-1.json").getPath();
+        String noMatchPath = getClass().getResource("volume-traded-1.json").getPath();
         trades = new TradeDataLoader().loadTrades(session, filePath);
+        noMatches = new TradeDataLoader().loadTrades(session, noMatchPath);
     }
 
     @Test
     public void checkAverageOfTestTrades() {
         AverageTradePriceExtractor extractor = new AverageTradePriceExtractor();
-        extractor.setSince("2015-07-30");
+        extractor.setSince("2021-07-30");
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
@@ -41,6 +44,13 @@ public class AverageTradePriceTest extends AbstractSparkUnitTest {
 
     @Test
     public void checkNoMatchesonTrades() {
+        AverageTradePriceExtractor extractor = new AverageTradePriceExtractor();
+        extractor.setSince("2021-07-30");
 
+        Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, noMatches);
+
+        Object result = meta.get(RfqMetadataFieldNames.averageTradedPrice);
+
+        assertEquals(0, (int) result);
     }
 }
