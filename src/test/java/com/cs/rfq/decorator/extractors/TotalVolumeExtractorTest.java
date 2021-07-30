@@ -62,8 +62,4 @@ public class TotalVolumeExtractorTest extends AbstractSparkUnitTest {
         assertEquals(1_300_000L, years);
     }
 
-
-
-
-
 }

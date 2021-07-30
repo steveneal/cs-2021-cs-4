@@ -12,4 +12,5 @@ public enum RfqMetadataFieldNames {
     qtyLastYear,
     qtyLastMonth,
     qtyLastWeek,
+    liquidityVolume,
 }
