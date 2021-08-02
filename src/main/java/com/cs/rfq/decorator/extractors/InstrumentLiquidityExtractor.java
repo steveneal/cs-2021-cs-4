@@ -12,7 +12,19 @@ import java.util.Map;
 
 import static com.cs.rfq.decorator.extractors.RfqMetadataFieldNames.*;
 
+/**
+ * InstrumentLiquidityExtractor reports the volume of an instrument traded by the bank in the Rfq to all other
+ * parties in the last month. This will be used later to calculate the liquidity.
+ */
 public class InstrumentLiquidityExtractor extends AbstractExtractor implements RfqMetadataExtractor {
+
+    /**
+     * extractMetaData returns a map with the volume traded in the last month mapped to "liquidityVolume".
+     * @param rfq as Rfq to supply the Isin and entity ID to match
+     * @param session as SparkSession
+     * @param trades as Dataset<Row> with previous trade data to extract from
+     * @return Map<RfqMetadtaFieldNames, Object> with the extacted data
+     */
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
 

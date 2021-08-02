@@ -9,14 +9,29 @@ import org.joda.time.DateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * VolumeTradedWithEntityYTDExtractor gets the volume of an instrument traded with an entity since the beginning
+ * of the year.
+ */
 public class VolumeTradedWithEntityYTDExtractor extends AbstractExtractor implements RfqMetadataExtractor {
 
+    /** The time to treat as "now" */
     private String since;
 
+    /**
+     * Constructs the class with the date of January first of the current year
+     */
     public VolumeTradedWithEntityYTDExtractor() {
         this.since = DateTime.now().getYear() + "-01-01";
     }
 
+    /**
+     * extractMetaData returns a map volumeTradedYearToDate.
+     * @param rfq as Rfq to supply the Isin and entity ID to match
+     * @param session as SparkSession
+     * @param trades as Dataset<Row> with previous trade data to extract from
+     * @return Map<RfqMetadtaFieldNames, Object> with the extacted data
+     */
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
 
@@ -38,6 +53,10 @@ public class VolumeTradedWithEntityYTDExtractor extends AbstractExtractor implem
         return results;
     }
 
+    /**
+     * Set the year to start from
+     * @param since as String to treat as today
+     */
     @Override
     public void setSince(String since){
         this.since = since;

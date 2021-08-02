@@ -11,8 +11,19 @@ import static org.apache.spark.sql.functions.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * TotalVolumeExtractor calculates the total amount of an instrument traded with an entity over the past
+ * week, month, and year.
+ */
 public class TotalVolumeExtractor extends AbstractExtractor implements RfqMetadataExtractor {
 
+    /**
+     * extractMetaData returns a map with qtyLastWeek, qtyLastMonth, qtyLastYear.
+     * @param rfq as Rfq to supply the Isin and entity ID to match
+     * @param session as SparkSession
+     * @param trades as Dataset<Row> with previous trade data to extract from
+     * @return Map<RfqMetadtaFieldNames, Object> with the extacted data
+     */
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
         long todayMs = getNow().getMillis();
@@ -32,7 +43,6 @@ public class TotalVolumeExtractor extends AbstractExtractor implements RfqMetada
         Dataset<Row> tradesPastYear = filtered.filter(trades.col("TradeDate").$greater$eq(new java.sql.Date(pastYearMs)))
                 .select(sum("LastQty"));
 
-        System.out.println(tradesPastWeek.first());
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
         if(tradesPastWeek.first().get(0) != null) {
             results.put(RfqMetadataFieldNames.qtyLastWeek, tradesPastWeek.first().get(0));
