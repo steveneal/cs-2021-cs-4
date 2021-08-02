@@ -15,8 +15,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static org.apache.spark.sql.functions.sum;
-
+/**
+ * <h1>Rfq Processor</h1>
+ * The RFQ Processor class allows a Spark session to interpolate RFQ messages with
+ * relevant metadata info to assist trader decisions.
+ */
 public class RfqProcessor {
 
     private final static Logger log = LoggerFactory.getLogger(RfqProcessor.class);
@@ -31,7 +34,16 @@ public class RfqProcessor {
 
     private final MetadataPublisher publisher = new MetadataJsonLogPublisher();
 
-    public RfqProcessor(SparkSession session, JavaStreamingContext streamingContext) {
+    public static final int VOLUME = 1;         // 00001
+    public static final int TOTAL_TRADES = 2;   // 00010
+    public static final int LIQUIDITY = 4;      // 00100
+    public static final int BIAS = 8;           // 01000
+    public static final int AVG_PRICE = 16;     // 10001
+    public static final int ALL_METADATA = 31;  // 11111
+
+
+
+    public RfqProcessor(SparkSession session, JavaStreamingContext streamingContext, int flags) {
         this.session = session;
         this.streamingContext = streamingContext;
 
@@ -39,13 +51,35 @@ public class RfqProcessor {
         TradeDataLoader loader = new TradeDataLoader();
         trades = loader.loadTrades(session, "src\\test\\resources\\trades\\trades.json");
 
+        addExtractors(flags);
+    }
 
-        //TODO: take a close look at how these two extractors are implemented
-        extractors.add(new TotalTradesWithEntityExtractor());
-        extractors.add(new VolumeTradedWithEntityYTDExtractor());
-        extractors.add(new TotalVolumeExtractor());
-        extractors.add(new InstrumentLiquidityExtractor());
-        extractors.add(new TradeBiasExtractor());
+    public RfqProcessor(SparkSession session, JavaStreamingContext streamingContext) {
+        this(session, streamingContext, ALL_METADATA);
+    }
+
+    /**
+     * List of extractors used by the Rfq Processor.
+     * <p>
+     * If future extractors are developed, add them to this function.
+     */
+    private void addExtractors(int flags){
+        if ((flags & VOLUME) == VOLUME){
+            extractors.add(new VolumeTradedWithEntityYTDExtractor());
+            extractors.add(new TotalVolumeExtractor());
+        }
+        if ((flags & TOTAL_TRADES) == TOTAL_TRADES){
+            extractors.add(new TotalTradesWithEntityExtractor());
+        }
+        if ((flags & LIQUIDITY) == LIQUIDITY){
+            extractors.add(new InstrumentLiquidityExtractor());
+        }
+        if ((flags & BIAS) == BIAS){
+            extractors.add(new TradeBiasExtractor());
+        }
+        if ((flags & AVG_PRICE) == AVG_PRICE){
+            extractors.add(new AverageTradePriceExtractor());
+        }
     }
 
     public void startSocketListener() throws InterruptedException {
@@ -66,7 +100,7 @@ public class RfqProcessor {
 
     public void processRfq(Rfq rfq) {
         log.info(String.format("Received Rfq: %s", rfq.toString()));
-        System.out.println(rfq);
+        System.out.println("Received Rfq: " + rfq);
 
         //create a blank map for the metadata to be collected
         Map<RfqMetadataFieldNames, Object> metadata = new HashMap<>();
