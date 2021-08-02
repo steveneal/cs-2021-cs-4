@@ -13,10 +13,21 @@ import org.slf4j.LoggerFactory;
 
 import static org.apache.spark.sql.types.DataTypes.*;
 
+/**
+ * Class to read a JSON file of trade data.
+ */
 public class TradeDataLoader {
 
     private final static Logger log = LoggerFactory.getLogger(TradeDataLoader.class);
 
+    /**
+     * loadTrades method takes a path and a spark sesson and creates a Dataset of Rows that contain trade
+     * information. This information is then extracted when an RFQ is processed to calculate various
+     * values of interest
+     * @param session as SparkSession
+     * @param path as String of the file to be read
+     * @return Dataset<Row> Containing all of the trade data from the file
+     */
     public Dataset<Row> loadTrades(SparkSession session, String path) {
         //Create an explicit schema for the trade data in the JSON files
         StructType schema =  new StructType(new StructField[] {
