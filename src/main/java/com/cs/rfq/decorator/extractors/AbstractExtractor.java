@@ -12,7 +12,9 @@ public abstract class AbstractExtractor {
     }
 
     public void setSince(String since) {
+        System.out.println("old millis: " + now.getMillis());
         now = DateTime.parse(since).withMillisOfDay(0);
+        System.out.println("new millis: " + now.getMillis());
     }
 
     public DateTime getNow() {

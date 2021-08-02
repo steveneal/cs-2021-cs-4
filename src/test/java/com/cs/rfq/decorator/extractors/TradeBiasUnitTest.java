@@ -32,7 +32,7 @@ public class TradeBiasUnitTest extends AbstractSparkUnitTest{
     @Test
     public void checkPositiveTradeBiasPercentage(){
         TradeBiasExtractor extractor = new TradeBiasExtractor();
-        extractor.setSince("2021-07-30");
+        extractor.setSince("2021-05-30");
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 

@@ -9,7 +9,7 @@ import org.joda.time.DateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-public class VolumeTradedWithEntityYTDExtractor implements RfqMetadataExtractor {
+public class VolumeTradedWithEntityYTDExtractor extends AbstractExtractor implements RfqMetadataExtractor {
 
     private String since;
 
@@ -38,7 +38,10 @@ public class VolumeTradedWithEntityYTDExtractor implements RfqMetadataExtractor 
         return results;
     }
 
-    public void setSince(String since) {
+    @Override
+    public void setSince(String since){
         this.since = since;
     }
+
+
 }

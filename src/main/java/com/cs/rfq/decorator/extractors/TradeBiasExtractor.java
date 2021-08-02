@@ -54,9 +54,5 @@ public class TradeBiasExtractor extends AbstractExtractor implements RfqMetadata
         return results;
     }
 
-    public void setSince(String str){
-        return;
-    }
-
 }
 
