@@ -14,6 +14,23 @@ import java.util.Properties;
  */
 public class RfqDecoratorMain {
 
+    /** Extractor flags for the RFQ Processor
+     *  <ul>
+     *      <li>ALL_METADATA: all extractors</li>
+     *      <li>VOLUME: total trade volume, volume traded with entity extractors</li>
+     *      <li>TOTAL_TRADES: total trades with entity extractor</li>
+     *      <li>LIQUIDITY: instrument liquidity extractor</li>
+     *      <li>BIAS: trade bias extractor</li>
+     *      <li>AVG_PRICE: average instrrument price extractor</li>
+     *  </ul>
+     *  <p>
+     *      Combine flags like so:
+     *      <i>"LIQUIDITY | BIAS"</i>
+     *      to customize extractor options
+     *  </p>
+     */
+    private static final int PROGRAM_FLAGS = RfqProcessor.ALL_METADATA;
+
     /**
      * Main method sets up a local spark index then connects to the localhost socket to emulate a
      * Kafka stream
@@ -50,7 +67,7 @@ public class RfqDecoratorMain {
         // Create a Spark session
         SparkSession session = SparkSession.builder().config(conf).getOrCreate();
         // Create a new RfqProcessor and set it listening for incoming RFQs
-        RfqProcessor rfqProcessor = new RfqProcessor(session, context);
+        RfqProcessor rfqProcessor = new RfqProcessor(session, context, PROGRAM_FLAGS);
         rfqProcessor.startSocketListener();
     }
 
