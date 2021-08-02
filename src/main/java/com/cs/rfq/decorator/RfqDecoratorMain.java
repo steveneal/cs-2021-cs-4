@@ -1,16 +1,37 @@
 package com.cs.rfq.decorator;
 
-import breeze.linalg.operators.SparseVectorOps$CanZipMapKeyValuesSparseVector$mcIJ$sp;
-import javafx.util.Duration;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 
+import java.io.*;
+import java.util.Properties;
+import java.util.stream.Stream;
+
 public class RfqDecoratorMain {
 
     public static void main(String[] args) throws Exception {
-        System.setProperty("hadoop.home.dir", "C:\\Java\\hadoop-2.9.2");
+        //Location of config.properties file
+        String filename = "src/main/resources/config.properties";
+        String hadoop_dir = "";
+
+        //Retrieve hadoop_dir from config.properties
+        try{
+            FileReader reader = new FileReader(filename);
+            Properties props = new Properties();
+            props.load(reader);
+
+            hadoop_dir = props.getProperty("hadoop_dir");
+
+            System.out.println("hadoop_dir is: " + hadoop_dir);
+            reader.close();
+        } catch (Exception e){
+            e.printStackTrace();
+            return;
+        }
+
+        System.setProperty("hadoop.home.dir", hadoop_dir);
         System.setProperty("spark.master", "local[4]");
 
         //TODO: create a Spark configuration and set a sensible app name
