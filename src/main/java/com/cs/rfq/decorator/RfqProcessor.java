@@ -38,7 +38,7 @@ public class RfqProcessor {
     public static final int TOTAL_TRADES = 2;   // 00010
     public static final int LIQUIDITY = 4;      // 00100
     public static final int BIAS = 8;           // 01000
-    public static final int AVG_PRICE = 16;     // 10001
+    public static final int AVG_PRICE = 16;     // 10000
     public static final int ALL_METADATA = 31;  // 11111
 
 
@@ -62,6 +62,7 @@ public class RfqProcessor {
      * List of extractors used by the Rfq Processor.
      * <p>
      * If future extractors are developed, add them to this function.
+     * @param flags Which extractors to run for this RFQ Processor.
      */
     private void addExtractors(int flags){
         if ((flags & VOLUME) == VOLUME){
